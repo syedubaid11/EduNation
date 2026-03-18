@@ -338,11 +338,13 @@ Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 <p align="center">
   Built with ❤️ by <a href="https://github.com/zaid-ahmed-ansari">Zaid Ahmed Ansari</a>
 </p>
-## ❤️ Support EduNation
+<h2 align="center">❤️ Support EduNation</h2>
 
-If you find this project useful, you can support its development:
+<p align="center">
+  If you find this project useful, you can support its development:
+</p>
 
-### 🇮🇳 UPI Support
+<h3 align="center">🇮🇳 UPI Support</h3>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/public/donate.jpeg" width="200" />
@@ -352,4 +354,7 @@ If you find this project useful, you can support its development:
   UPI ID: <strong>zaid@upi</strong>
 </p>
 
-*Your support helps cover API & server costs and keeps EduNation free for everyone.*
+<p align="center">
+  <em>Your support helps cover API & server costs and keeps EduNation free for everyone.</em>
+</p>
+
