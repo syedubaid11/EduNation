@@ -6,6 +6,20 @@ import { fetchGeoJson } from '../services/geo.service.js';
 import fs from 'fs';
 import path from 'path';
 
+// Memory Caching local JSON to prevent recurrent disk I/O on every request
+let hapDataCache: any = null;
+const getHappinessData = () => {
+  if (!hapDataCache) {
+    const hapPath = path.join(process.cwd(), 'src/data/unified_happiness.json');
+    if (fs.existsSync(hapPath)) {
+      hapDataCache = JSON.parse(fs.readFileSync(hapPath, 'utf8'));
+    } else {
+      hapDataCache = {};
+    }
+  }
+  return hapDataCache;
+};
+
 export const getCountries = async (req: Request, res: Response) => {
   try {
     const data = await fetchAllCountries();
@@ -114,9 +128,8 @@ export const getCountryIndicators = async (req: Request, res: Response) => {
     try {
       const countryDetails = await fetchCountryByCode(code);
       const countryName = countryDetails[0]?.name?.common || countryDetails?.name?.common;
-      const hapPath = path.join(process.cwd(), 'src/data/unified_happiness.json');
-      if (fs.existsSync(hapPath) && countryName) {
-        const hapData = JSON.parse(fs.readFileSync(hapPath, 'utf8'));
+      if (countryName) {
+        const hapData = getHappinessData();
         if (hapData[countryName]) {
           const hapScores = Object.entries(hapData[countryName]).map(([year, val]) => ({ date: year, value: val as number }));
           hapScores.sort((a, b) => parseInt(b.date) - parseInt(a.date));
@@ -126,7 +139,7 @@ export const getCountryIndicators = async (req: Request, res: Response) => {
         }
       }
     } catch (e) {
-      console.error('Failed reading happiness data:', e);
+      console.error('Failed processing happiness data:', e);
       payload.happiness = null;
     }
 

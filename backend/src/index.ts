@@ -1,23 +1,64 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import pinoHttp from 'pino-http';
 import dotenv from 'dotenv';
+import apiRoutes from './routes/index.js';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Security, Compression, and Logging
+app.use(helmet());
+app.use(compression());
+app.use((pinoHttp as any)({
+  transport: {
+    target: 'pino-pretty',
+    options: { colorize: true }
+  }
+}));
+
+// Rate Limiting (200 requests per 15 mins)
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: { error: 'Too many requests, please try again later.' }
+}));
+
+// CORS - as per user request, we are SKIPping the strict CORS for now
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('EduNation API Backend Running. Use /api/* for data endpoints.');
+// Health Check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
 });
 
-import apiRoutes from './routes/index.js';
+app.get('/', (req, res) => {
+  res.send('NationHub API Backend Running. Use /api/* for data endpoints.');
+});
 
 app.use('/api', apiRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
+  
+  // Cache Warming
+  setTimeout(() => {
+    console.log('🔥 Initiating cache warming for top 5 countries (USA, IND, CHN, GBR, DEU)...');
+    try {
+      import('./controllers/countryController.js').then(({ getCountryIndicators }) => {
+        ['USA', 'IND', 'CHN', 'GBR', 'DEU'].forEach(code => {
+          // Fire-and-forget dummy requests
+          getCountryIndicators({ params: { code } } as any, { json: () => {} } as any).catch(() => {});
+        });
+      });
+    } catch (e) {
+      console.error('Failed to warm cache:', e);
+    }
+  }, 2000);
 });

@@ -79,5 +79,8 @@ test-results/
 *.local
 *.tgz
 .cache/
+
+# ── Personal / Local Docs ──
+
 tmp/
 temp/

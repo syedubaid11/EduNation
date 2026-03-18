@@ -184,11 +184,10 @@ edunation/
 │       ├── utils/
 │       │   └── cache.ts        # Multi-tier caching utility
 │       ├── data/
-│       │   └── unified_happiness.json  # Happiness 2009–2024
+│       │   ├── unified_happiness.json  # Happiness 2009–2024
+│       │   └── owid_co2.json           # Pre-cached CO₂ emissions
 │       └── scripts/
-│           ├── ingest.ts       # Full DB population script
-│           ├── unify-happiness.ts      # Happiness data unifier
-│           └── fetch-missing-happiness.ts # 2021-23 data fetcher
+│           └── ingest.ts               # Full DB population script
 │
 └── frontend/
     ├── .env.example            # Environment variable template

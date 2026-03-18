@@ -4,6 +4,20 @@ import { getCache, setCache } from '../utils/cache.js';
 import fs from 'fs';
 import path from 'path';
 
+// Memory Caching local JSON to prevent recurrent disk I/O on every request
+let hapDataCache: any = null;
+const getHappinessData = () => {
+  if (!hapDataCache) {
+    const hapPath = path.join(process.cwd(), 'src/data/unified_happiness.json');
+    if (fs.existsSync(hapPath)) {
+      hapDataCache = JSON.parse(fs.readFileSync(hapPath, 'utf8'));
+    } else {
+      hapDataCache = {};
+    }
+  }
+  return hapDataCache;
+};
+
 /**
  * GET /api/simulation/baseline/:code
  * Returns simulation baseline data for a country
@@ -57,9 +71,8 @@ export const getSimulationBaseline = async (req: Request, res: Response) => {
 
     // Attach Happiness Data from our unified local JSON
     try {
-      const hapPath = path.join(process.cwd(), 'src/data/unified_happiness.json');
-      if (fs.existsSync(hapPath) && country.name) {
-        const hapData = JSON.parse(fs.readFileSync(hapPath, 'utf8'));
+      if (country.name) {
+        const hapData = getHappinessData();
         if (hapData[country.name]) {
           const yearStr = String(result.year);
           // If exact year doesn't exist, try 2022 or the latest available

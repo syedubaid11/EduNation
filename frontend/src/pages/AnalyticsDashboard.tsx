@@ -476,20 +476,24 @@ export const AnalyticsDashboard = () => {
             {activeCat === 'all' && (
               <div className="dash-reveal grid grid-cols-3 gap-3">
                 <InsightCard
-                  label="Economic Strength" icon={TrendingUp}
-                  value="Top 4" desc="4th largest economy globally by nominal GDP, highly diversified industrial base."
-                  color="#E07B35" bg="rgba(224,123,53,0.12)" loading={loadingMeta} // Analytics specific hardcoded/DB driven
+                  label="GDP per Capita" icon={TrendingUp}
+                  value={latestValues['gdp'] && latestValues['pop'] ? `$${Math.round(latestValues['gdp'] / latestValues['pop']).toLocaleString()}` : 'N/A'}
+                  desc="Economic output divided by total population, indicating average standard of living."
+                  color="#E07B35" bg="rgba(224,123,53,0.12)" loading={loadingInd} 
                 />
                 <InsightCard
-                  label="HDI Score" icon={ShieldCheck}
-                  value={latestValues['hdi'] ? String(latestValues['hdi']) : '0.942'}
-                  desc="Very high human development. Ranked #9 globally in the UNDP index."
+                  label="Unemployment" icon={ShieldCheck}
+                  value={latestValues['unemployment'] ? `${latestValues['unemployment'].toFixed(1)}%` : 'N/A'}
+                  desc="Percentage of the total labor force that is unemployed but actively seeking employment."
                   color="#27B08A" bg="rgba(39,176,138,0.12)" loading={loadingInd}
                 />
                 <InsightCard
                   label="Trade Openness" icon={Ship}
-                  value="88% GDP" desc="Exports + imports = 88% of GDP — one of the world's most open major economies."
-                  color="#4190CC" bg="rgba(65,144,204,0.12)" loading={loadingMeta}
+                  value={latestValues['exports'] && latestValues['imports'] && latestValues['gdp'] ? 
+                    `${(((latestValues['exports'] + latestValues['imports']) / latestValues['gdp']) * 100).toFixed(1)}% GDP` 
+                    : 'N/A'} 
+                  desc="Sum of exports and imports as a percentage of GDP, measuring integration into the global economy."
+                  color="#4190CC" bg="rgba(65,144,204,0.12)" loading={loadingInd}
                 />
               </div>
             )}

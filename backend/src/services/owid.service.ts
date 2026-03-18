@@ -1,53 +1,28 @@
-import axios from 'axios';
-import { parse } from 'csv-parse/sync';
-import { getCache, setCache } from '../utils/cache.js';
+import fs from 'fs';
+import path from 'path';
 
-const CO2_URL = 'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.csv';
-const ENERGY_URL = 'https://nyc3.digitaloceanspaces.com/owid-public/data/energy/owid-energy-data.csv';
+let owidCo2Cache: Record<string, any[]> | null = null;
 
-// Note: OWID CSVs are massive. We should fetch, parse, and extract only the relevant country data
-// and cache the extracted chunk so we don't hold the entire CSV in memory constantly.
+const loadOwidCo2 = () => {
+  if (!owidCo2Cache) {
+    const jsonPath = path.join(process.cwd(), 'src/data/owid_co2.json');
+    if (fs.existsSync(jsonPath)) {
+      owidCo2Cache = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    } else {
+      owidCo2Cache = {};
+      console.warn('⚠️ owid_co2.json not found! Please run `npx tsx src/scripts/ingest-owid.ts`');
+    }
+  }
+  return owidCo2Cache;
+};
 
 export const fetchOwidData = async (type: 'co2' | 'energy', iso3: string) => {
-  const url = type === 'co2' ? CO2_URL : ENERGY_URL;
-  const endpoint = `owid_${type}_${iso3}`;
-  const cached = await getCache(endpoint);
-  if (cached) return cached;
-
-  try {
-    // First, see if we cached the full filtered map somewhere (advanced enhancement)
-    // For now, fetch and parse specifically for the requested country
-    const response = await axios.get(url, { responseType: 'text' });
-    const records = parse(response.data, {
-      columns: true,
-      skip_empty_lines: true,
-    });
-
-    // Filter by iso3
-    const countryData = records.filter((row: any) => row.iso_code === iso3);
-
-    // Minimize payload
-    const minimized = countryData.map((row: any) => {
-      if (type === 'co2') {
-        return {
-          year: parseInt(row.year, 10),
-          co2: parseFloat(row.co2) || null,
-          co2_per_capita: parseFloat(row.co2_per_capita) || null,
-        };
-      } else {
-        return {
-          year: parseInt(row.year, 10),
-          renewables_share_energy: parseFloat(row.renewables_share_energy) || null,
-          fossil_share_energy: parseFloat(row.fossil_share_energy) || null,
-          primary_energy_consumption: parseFloat(row.primary_energy_consumption) || null
-        };
-      }
-    });
-
-    await setCache('OWID', endpoint, minimized, 24);
-    return minimized;
-  } catch (error) {
-    console.error(`Failed to fetch OWID ${type} for ${iso3}:`, error);
-    throw error;
+  if (type === 'co2') {
+    const data = loadOwidCo2();
+    return data[iso3] || [];
   }
+  
+  // Note: energy data is not currently used by the frontend.
+  // If needed in the future, a similar ingest script should be added.
+  return [];
 };
