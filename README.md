@@ -1,8 +1,9 @@
+<h1 align="center">🌍 EduNation</h1>
 <p align="center">
   <img src="frontend/src/assets/hero.png" alt="EduNation Banner" width="800"/>
 </p>
 
-<h1 align="center">🌍 EduNation</h1>
+
 
 <p align="center">
   <strong>An interactive geopolitical analytics & policy simulation platform</strong><br/>
@@ -19,16 +20,16 @@
 
 ## ✨ Feature Preview
 
-> **Note:** Replace the placeholder below with actual screenshots of your running application.
+
 
 | 3D Interactive Globe | Analytics Dashboard | Policy Simulation |
 |:---:|:---:|:---:|
-| ![Globe](https://via.placeholder.com/300x200/0E1017/E07B35?text=3D+Globe) | ![Analytics](https://via.placeholder.com/300x200/0E1017/4190CC?text=Analytics) | ![Simulation](https://via.placeholder.com/300x200/0E1017/27B08A?text=Simulation) |
+| ![Globe](frontend/src/assets/globe.png) | ![Analytics](frontend/src/assets/analytics.png) | ![Simulation](frontend/src/assets/simulation.png) |
 | Click any country to explore | 25+ real-time indicators | Adjust 25 policy sliders |
 
 | Cross-Country Comparison | Data Year Selector | Progressive Loading |
 |:---:|:---:|:---:|
-| ![Compare](https://via.placeholder.com/300x200/0E1017/B58AE0?text=Compare) | ![Year](https://via.placeholder.com/300x200/0E1017/E07B35?text=Year+Selector) | ![Loading](https://via.placeholder.com/300x200/0E1017/4190CC?text=Progressive+Load) |
+| ![Compare](frontend/src/assets/compare.png) | *No image available* | *No image available* |
 | Side-by-side nation analysis | Historical year selection (2000–2024) | Per-metric skeleton loaders |
 
 ---
@@ -106,13 +107,12 @@
 
 ```
 edunation/
-├── .gitignore                  # Root gitignore (protects .env files)
+├── .gitignore                  # Root gitignore
 ├── LICENSE                     # MIT License
 ├── CONTRIBUTING.md             # Contribution guidelines
 ├── CODE_OF_CONDUCT.md          # Contributor Covenant
 ├── README.md                   # ← You are here
 ├── SCHEMA.SQL                  # Full database schema
-├── DATABASE_SCHEMA.MD          # Schema documentation
 │
 ├── backend/
 │   ├── .env.example            # Environment variable template
