@@ -1,9 +1,7 @@
 <h1 align="center">🌍 EduNation</h1>
 <p align="center">
-  <img src="frontend/src/assets/hero.png" alt="EduNation Banner" width="800"/>
+  <img src="https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/src/assets/hero.png" alt="EduNation Banner" width="800"/>
 </p>
-
-
 
 <p align="center">
   <strong>An interactive geopolitical analytics & policy simulation platform</strong><br/>
@@ -18,27 +16,60 @@
 
 ---
 
+## 📖 Table of Contents
+- [🔗 Check it Live](#-check-it-live)
+- [🎯 Why EduNation?](#-why-edunation)
+- [👥 Who is this for?](#-who-is-this-for)
+- [✨ Feature Preview](#-feature-preview)
+- [🚀 Core Features](#-core-features)
+- [🧠 Architecture Overview](#-architecture-overview)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [⚡ Quick Start](#-quick-start)
+- [🟢 Good First Issues](#-good-first-issues)
+- [🤝 Contributing](#-contributing)
+
+---
+
+## 🔗 Check it Live
+
+**Coming Soon!** We will soon add a live domain URL where you can explore the fully interactive 3D globe and simulate policy impacts directly from your browser. Stay tuned!
+
+---
+
+## 🎯 Why EduNation?
+
+EduNation was built to make global policy and economic data interactive, intuitive, and exploratory — enabling students, researchers, and curious minds to simulate "what if" scenarios and understand how nations evolve over time.
+
+## 👥 Who is this for?
+
+- **Students** learning economics, geopolitics, or data analysis  
+- **Developers** interested in data visualization and simulations  
+- **Researchers** exploring country-level trends  
+- **Anyone** curious about "what if" macro-policy scenarios  
+
+---
+
 ## ✨ Feature Preview
 
 ### 3D Interactive Globe
-![Globe](frontend/src/assets/globe.png)
+![Globe](https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/src/assets/globe.png)
 *Click any country to explore*
 
 ### Analytics Dashboard
-![Analytics](frontend/src/assets/analytics.png)
+![Analytics](https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/src/assets/analytics.png)
 *25+ real-time indicators*
 
 ### Policy Simulation
-![Simulation](frontend/src/assets/simulation.png)
+![Simulation](https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/src/assets/simulation.png)
 *Adjust 25 policy sliders*
 
 ### Cross-Country Comparison
-![Compare](frontend/src/assets/compare.png)
+![Compare](https://raw.githubusercontent.com/zaid-ahmed-ansari/EduNation/main/frontend/src/assets/compare.png)
 *Side-by-side nation analysis*
 
 ---
 
-## 🚀 Features
+## 🚀 Core Features
 
 ### 🌐 Interactive 3D Globe
 - Photorealistic Earth rendered with **Three.js** & **React Three Fiber**
@@ -69,6 +100,17 @@
 - Once any user fetches a country's data, it's cached in Redis for instant access
 - Persistent fallback in Supabase's `api_cache` table
 - Dramatically reduces API calls and improves response times
+
+---
+
+## 🧠 Architecture Overview
+
+`Frontend (React) → Backend (Express) → Redis Cache → PostgreSQL → External APIs`
+
+1. **User Request**: The React frontend requests country data.
+2. **Tier 1 (Redis)**: The Express backend checks Upstash Redis. If a hit, data is returned instantly (~50ms).
+3. **Tier 2 (PostgreSQL)**: On a Redis miss, it queries the Supabase `api_cache` table. If found, it backfills Redis and returns data (~200ms).
+4. **Tier 3 (External API)**: If no database record exists, it fetches from the World Bank/REST Countries external APIs, parses the data, saves to Supabase, sets Redis, and returns it.
 
 ---
 
@@ -116,7 +158,8 @@ edunation/
 ├── CONTRIBUTING.md             # Contribution guidelines
 ├── CODE_OF_CONDUCT.md          # Contributor Covenant
 ├── README.md                   # ← You are here
-├── SCHEMA.SQL                  # Full database schema
+├── schema.sql                  # Full database schema
+├── DATABASE_SCHEMA.MD          # Schema documentation
 │
 ├── backend/
 │   ├── .env.example            # Environment variable template
@@ -193,14 +236,14 @@ edunation/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Zaid-Ahmed-Ansari/EduNation.git
+git clone https://github.com/zaid-ahmed-ansari/EduNation.git
 cd EduNation
 ```
 
 ### 2. Set Up the Database
 
 1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to the **SQL Editor** and run the contents of [`SCHEMA.SQL`](./SCHEMA.SQL)
+2. Go to the **SQL Editor** and run the contents of [`schema.sql`](./schema.sql)
 3. Copy your project **URL** and **anon key** from Settings → API
 
 ### 3. Configure Backend
@@ -251,39 +294,12 @@ Navigate to **http://localhost:5173** and explore the globe! 🌍
 
 ---
 
-## 🔧 Environment Variables
+## 🟢 Good First Issues
 
-### Backend (`backend/.env`)
-
-| Variable | Required | Description |
-|---|:---:|---|
-| `PORT` | No | Server port (default: `5000`) |
-| `SUPABASE_URL` | ✅ | Your Supabase project URL |
-| `SUPABASE_ANON_KEY` | ✅ | Your Supabase public anon key |
-| `REDIS_URL` | No | Upstash Redis REST URL |
-| `REDIS_TOKEN` | No | Upstash Redis REST token |
-
-### Frontend (`frontend/.env`)
-
-| Variable | Required | Description |
-|---|:---:|---|
-| `VITE_API_URL` | No | Backend API URL (default: `http://localhost:5000/api`) |
-
----
-
-## 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/countries` | List all countries (simplified) |
-| `GET` | `/api/country/:code` | Full country details by ISO3 |
-| `GET` | `/api/country/:code/neighbours` | Bordering countries |
-| `GET` | `/api/country/:code/indicators` | All 25+ indicators + happiness |
-| `GET` | `/api/country/:code/analytics` | CO₂ time-series data |
-| `GET` | `/api/simulation/baseline/:code` | Simulation baseline data |
-| `GET` | `/api/simulation/rankings` | Global country rankings |
-| `GET` | `/api/indicators/:code/history` | Indicator time-series from DB |
-| `GET` | `/api/geo` | GeoJSON geometry data |
+- Improve UI responsiveness on smaller mobile screens
+- Add more countries to the simulation baseline dataset
+- Enhance React chart performance for large datasets
+- Improve caching strategy documentation inside the codebase
 
 ---
 
@@ -317,5 +333,5 @@ Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 ---
 
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/Zaid-Ahmed-Ansari">Zaid Ahmed Ansari</a>
+  Built with ❤️ by <a href="https://github.com/zaid-ahmed-ansari">Zaid Ahmed Ansari</a>
 </p>
