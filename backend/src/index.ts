@@ -30,7 +30,12 @@ app.use(rateLimit({
 }));
 
 // CORS - as per user request, we are SKIPping the strict CORS for now
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'https://edu-nation-j4o5.vercel.app',
+    credentials: true
+  }
+));
 app.use(express.json());
 
 // Health Check
