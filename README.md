@@ -249,6 +249,9 @@ docker compose up -d --build
 
 This starts all required containers (frontend, backend, postgres, redis) and runs schema initialization automatically before the backend starts.
 
+Note: For local Docker development, you do not need to create or edit backend .env.
+Development environment variables (including NODE_ENV=development) are already provided in docker-compose.yml.
+
 ### 3. (Optional) Seed Data
 
 If you want local Postgres to contain preloaded indicator data:

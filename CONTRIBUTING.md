@@ -58,6 +58,9 @@ EduNation is Docker-first for local development.
 docker compose up -d --build
 ```
 
+Note: For local Docker development, do not add or edit backend .env.
+The required development variables are already defined in docker-compose.yml (including NODE_ENV=development).
+
 ### Services/Containers
 
 - `frontend` (`edunation-frontend`)
